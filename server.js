@@ -42,7 +42,7 @@ app.use(bodyParser.json({ limit: "1mb" }));
 
 // Log simples
 app.use((req, res, next) => {
-console.log([${new Date().toISOString()}] ${req.method} ${req.url});
+console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
 next();
 });
 
@@ -106,19 +106,19 @@ limit: 1,
 });
 
 let text = "";
-const first = msgs.data?.;
+const first = msgs.data?.[0];
 if (first && first.content?.length) {
-const block = first.content.find((c) => c.type === "text");
-text = block?.text?.value || "";
+  const block = first.content.find((c) => c.type === "text");
+  text = block?.text?.value || "";
 }
 
-// Tenta extrair um bloco de checklist em JSON entre json ...
+// Tenta extrair um bloco de checklist em JSON entre ```json e ```
 let check = null;
-const match = text.match(/json\s*([\s\S]*?)\s*
+const match = text.match(/```json\s*([\s\S]*?)\s*```/);
 if (match) {
-try {
-check = JSON.parse(match);
-} catch {}
+  try {
+    check = JSON.parse(match[1]);
+  } catch {}
 }
 
 return { ok: true, threadId, text, check };
@@ -198,5 +198,5 @@ res.status(404).send("Not found");
 
 // Start
 app.listen(PORT, () => {
-console.log(Server on http://localhost:${PORT});
+  console.log(`Server on http://localhost:${PORT}`);
 });
